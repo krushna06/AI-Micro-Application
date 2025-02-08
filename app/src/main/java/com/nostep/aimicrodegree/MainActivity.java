@@ -1,7 +1,6 @@
 package com.nostep.aimicrodegree;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -13,6 +12,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         setContentView(R.layout.activity_main);
 
         myWeb = findViewById(R.id.myWeb);
