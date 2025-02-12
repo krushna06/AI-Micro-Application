@@ -26,16 +26,22 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
 
-        myWeb.setWebViewClient(new WebViewClient());
+        myWeb.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                injectChatPopup();
+            }
+        });
+
         myWeb.setWebChromeClient(new WebChromeClient());
-
         myWeb.loadUrl("https://aimicrodegree.org/login");
-
-        myWeb.postDelayed(this::injectChatPopup, 3000);
     }
 
     private void injectChatPopup() {
-        String jsCode = "var chatButton = document.createElement('div');" +
+        String jsCode = "if (!document.getElementById('chatButton')) {" +
+                "var chatButton = document.createElement('div');" +
+                "chatButton.id = 'chatButton';" +
                 "chatButton.innerHTML = '💬';" +
                 "chatButton.style.position = 'fixed';" +
                 "chatButton.style.bottom = '20px';" +
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.body.appendChild(chatButton);" +
 
                 "var chatContainer = document.createElement('div');" +
+                "chatContainer.id = 'chatContainer';" +
                 "chatContainer.style.position = 'fixed';" +
                 "chatContainer.style.bottom = '80px';" +
                 "chatContainer.style.right = '20px';" +
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 "       let response = await fetch('https://api.openai.com/v1/chat/completions', {" +
                 "           method: 'POST'," +
                 "           headers: {" +
-                "               'Authorization': 'Bearer MY_KEY'," +
+                "               'Authorization': 'Bearer MY_API'," +
                 "               'Content-Type': 'application/json'" +
                 "           }," +
                 "           body: JSON.stringify({" +
@@ -124,7 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
                 "closeButton.addEventListener('click', function() {" +
                 "   chatContainer.style.display = 'none';" +
-                "});";
+                "});" +
+                "}";
 
         myWeb.evaluateJavascript(jsCode, null);
     }
