@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 injectChatPopup();
+                injectAnswersMenu();
             }
         });
 
@@ -133,6 +134,39 @@ public class MainActivity extends AppCompatActivity {
                 "   chatContainer.style.display = 'none';" +
                 "});" +
                 "}";
+
+        myWeb.evaluateJavascript(jsCode, null);
+    }
+
+    private void injectAnswersMenu() {
+        String jsCode =
+                "(function() {" +
+                        "var sideMenu = document.querySelector('.side-menu');" +
+                        "if (sideMenu && !document.getElementById('answersMenuItem')) {" +
+                        "var li = document.createElement('li');" +
+                        "li.className = 'slide';" +
+                        "li.id = 'answersMenuItem';" +
+
+                        "var a = document.createElement('a');" +
+                        "a.className = 'side-menu__item';" +
+                        "a.href = 'https://aimicrodegree.org/answers';" +
+
+                        "var icon = document.createElement('i');" +
+                        "icon.className = 'fa fa-bandcamp side-menu__icon';" +
+                        "icon.setAttribute('data-bs-toggle', 'tooltip');" +
+                        "icon.setAttribute('title', 'Answers');" +
+
+                        "var span = document.createElement('span');" +
+                        "span.className = 'side-menu__label';" +
+                        "span.innerText = ' Answers';" +
+
+                        "a.appendChild(icon);" +
+                        "a.appendChild(span);" +
+                        "li.appendChild(a);" +
+                        "sideMenu.appendChild(li);" +
+
+                        "}" +
+                        "})();";
 
         myWeb.evaluateJavascript(jsCode, null);
     }
