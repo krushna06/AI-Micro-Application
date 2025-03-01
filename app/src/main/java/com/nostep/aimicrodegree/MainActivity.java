@@ -1,3 +1,4 @@
+// Shit codebase, I'm aware of it, please don't use it
 package com.nostep.aimicrodegree;
 
 import android.os.Bundle;
@@ -109,20 +110,35 @@ public class MainActivity extends AppCompatActivity {
                 "   if (event.key === 'Enter') {" +
                 "       let userMessage = this.value;" +
                 "       this.value = '';" +
-                "       chatMessages.innerHTML += '<div>User: ' + userMessage + '</div>';" +
-                "       let response = await fetch('http://localhost:8080/v1/chat', {" +
-                "           method: 'POST'," +
-                "           headers: {" +
-                "               'Authorization': 'Bearer MY_API'," +
-                "               'Content-Type': 'application/json'" +
-                "           }," +
-                "           body: JSON.stringify({" +
-                "               model: 'gpt-3.5-turbo'," +
-                "               messages: [{ role: 'user', content: userMessage }]" +
-                "           })" +
-                "       });" +
-                "       let data = await response.json();" +
-                "       chatMessages.innerHTML += '<div>Bot: ' + data.choices[0].message.content + '</div>';" +
+                "       chatMessages.innerHTML += '<div><b>User:</b> ' + userMessage + '</div>';" +
+
+                "       try {" +
+                "           let response = await fetch('https://11434-krushna06-nullrepo-mgujl3vq26c.ws-us118.gitpod.io/api/generate', {" +
+                "               method: 'POST'," +
+                "               headers: {" +
+                "                   'Content-Type': 'application/json'" +
+                "               }," +
+                "               body: JSON.stringify({" +
+                "                   model: 'deepseek-r1:1.5b'," +
+                "                   prompt: userMessage," +
+                "                   stream: false" +
+                "               })" +
+                "           });" +
+
+                "           if (!response.ok) {" +
+                "               throw new Error('Network response was not ok');" +
+                "           }" +
+
+                "           let data = await response.json();" +
+                "           if (data.response) {" +
+                "               let botMessage = data.response;" +
+                "               chatMessages.innerHTML += '<div><b>Bot:</b> ' + botMessage + '</div>';" +
+                "           } else {" +
+                "               chatMessages.innerHTML += '<div><b>Bot:</b> Sorry, I could not process that.</div>';" +
+                "           }" +
+                "       } catch (error) {" +
+                "           chatMessages.innerHTML += '<div><b>Bot:</b> Error: ' + error.message + '</div>';" +
+                "       }" +
                 "   }" +
                 "});" +
 
@@ -138,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         myWeb.evaluateJavascript(jsCode, null);
     }
 
+    // todo: need to get div ids and generate answers based on that
     private void injectAnswersMenu() {
         String jsCode =
                 "(function() {" +
@@ -149,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
                         "var a = document.createElement('a');" +
                         "a.className = 'side-menu__item';" +
+                        // this url doesn't exist btw, palceholder only
                         "a.href = 'https://aimicrodegree.org/answers';" +
 
                         "var icon = document.createElement('i');" +
@@ -164,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
                         "a.appendChild(span);" +
                         "li.appendChild(a);" +
                         "sideMenu.appendChild(li);" +
-
                         "}" +
                         "})();";
 
