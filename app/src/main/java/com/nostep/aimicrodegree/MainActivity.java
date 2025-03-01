@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 "       let userMessage = this.value;" +
                 "       this.value = '';" +
                 "       chatMessages.innerHTML += '<div>User: ' + userMessage + '</div>';" +
-                "       let response = await fetch('https://api.openai.com/v1/chat/completions', {" +
+                "       let response = await fetch('http://localhost:8080/v1/chat', {" +
                 "           method: 'POST'," +
                 "           headers: {" +
                 "               'Authorization': 'Bearer MY_API'," +
