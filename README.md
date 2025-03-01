@@ -11,12 +11,10 @@
    3. [Chat Popup Implementation](#chat-popup-implementation)
    4. [Dynamic Menu Injection](#dynamic-menu-injection)
 5. [External API Integration](#external-api-integration)
-6. [CSS and UI Improvements](#css-and-ui-improvements)
-7. [Conclusion](#conclusion)
 
 ## Overview
 
-The AI Micro Degree application is designed to provide users with an interactive learning experience via a dynamic and responsive WebView. The application leverages advanced web technologies and mobile UI components to create a seamless interface between users and online content, while also integrating AI-powered interactions using OpenAI's GPT model. 
+The AI Micro Degree application is designed to provide users with an interactive learning experience via a dynamic and responsive WebView. The application leverages advanced web technologies and mobile UI components to create a seamless interface between users and online content. 
 
 This document provides an in-depth explanation of how the application works, including technical details regarding the WebView setup, JavaScript injection, and integration with external APIs.
 
@@ -25,8 +23,8 @@ This document provides an in-depth explanation of how the application works, inc
 - **Android Studio**: The primary development environment for building Android applications.
 - **WebView**: Used to display and interact with web content within the app.
 - **JavaScript**: Utilized for injecting dynamic content (e.g., chatbot, menu).
-- **CSS**: Used for styling the injected HTML elements (chat popup and menu) in the web content.
-- **REST API**: The app interacts with the OpenAI API for natural language processing.
+- **Ollama**: A lightweight backend for running AI models locally or remotely.
+- **deepseek-r1:1.5b**: The AI model used for natural language processing.
 
 ## Project Structure
 
@@ -57,7 +55,7 @@ A custom chatbot feature is implemented using JavaScript. Upon page load, the fo
   
 - **Chat Container**: A hidden chat window that appears on demand, containing a header, close button, messages area, and input box.
   
-- **Message Handling**: The user can type messages into the input field. Upon pressing Enter, the message is sent to the OpenAI API, which processes the input and returns a relevant AI-generated response. The response is then displayed in the chat window.
+- **Message Handling**: The user can type messages into the input field. Upon pressing Enter, the message is sent to the **Ollama** backend, which processes the input and returns a relevant AI-generated response. The response is then displayed in the chat window.
 
 ### Dynamic Menu Injection
 
@@ -70,17 +68,25 @@ This approach allows the web content to be customized at runtime, providing a ta
 
 ## External API Integration
 
-The chatbot functionality integrates with the OpenAI GPT-3.5 model, enabling natural language processing and AI-driven conversations. The integration is achieved via a `fetch` request to the OpenAI API, passing the user's input and retrieving a response. The API key for authentication is securely passed in the request headers.
+The chatbot functionality integrates with the **Ollama** backend, enabling natural language processing and AI-driven conversations. The integration is achieved via a `fetch` request to the Ollama API, passing the user's input and retrieving a response. The Ollama server can be configured to run locally or allow access from anywhere, depending on the user's preference.
+
+### Example Integration Code
 
 ```javascript
-let response = await fetch('https://api.openai.com/v1/chat/completions', {
+let response = await fetch('http://localhost:11434/api/generate', {
    method: 'POST',
    headers: {
-       'Authorization': 'Bearer MY_API_KEY',
        'Content-Type': 'application/json'
    },
    body: JSON.stringify({
-       model: 'gpt-3.5-turbo',
-       messages: [{ role: 'user', content: userMessage }]
+       model: 'deepseek-r1:1.5b',
+       prompt: userMessage,
+       stream: false
    })
 });
+```
+
+### Key Features:
+1. **Local or Remote Access**: The Ollama server can be configured to run locally (`OLLAMA_HOST=127.0.0.1`) or allow access from anywhere (`OLLAMA_HOST=0.0.0.0`).
+2. **Model Support**: The `deepseek-r1:1.5b` model is used for generating responses.
+3. **Streaming Option**: The `stream` parameter can be set to `true` or `false` depending on whether real-time streaming of responses is required.
